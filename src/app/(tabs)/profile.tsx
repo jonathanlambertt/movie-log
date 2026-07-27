@@ -1,3 +1,5 @@
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -34,6 +36,14 @@ export default function ProfileScreen() {
   const { session } = useSession();
   const stats = useProfileStats();
   const options: ThemePreference[] = ['system', 'light', 'dark'];
+
+  // Refresh stats when the tab regains focus so they reflect newly logged films.
+  const { refetch } = stats;
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   const displayName =
     (session?.user.user_metadata?.display_name as string | undefined) ?? null;

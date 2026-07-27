@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Repeat } from 'lucide-react-native';
+import { useCallback } from 'react';
 import { ActivityIndicator, Pressable, SectionList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -49,6 +50,15 @@ export default function DiaryScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const diary = useDiary();
+
+  // Refresh when the tab regains focus so newly logged films appear without
+  // a reload.
+  const { refetch } = diary;
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   if (diary.isLoading) {
     return (

@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -11,6 +12,15 @@ export default function WatchlistScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const watchlist = useWatchlist();
+
+  // Refetch when the tab regains focus so changes made elsewhere (e.g. the
+  // watchlist toggle on a film's detail screen) show up without a reload.
+  const { refetch } = watchlist;
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
