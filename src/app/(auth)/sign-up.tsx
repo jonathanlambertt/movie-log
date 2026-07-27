@@ -35,6 +35,16 @@ export default function SignUpScreen() {
       Alert.alert('Sign up failed', error.message);
       return;
     }
+    // Supabase hides "email already registered" to prevent enumeration: it
+    // returns success with no error, but an existing address comes back with an
+    // empty identities array. Detect that and point the user to sign in.
+    if (data.user && data.user.identities?.length === 0) {
+      Alert.alert(
+        'Email already registered',
+        'An account with this email already exists. Try signing in instead.',
+      );
+      return;
+    }
     if (!data.session) {
       // Email confirmation is still enabled in Supabase — the account
       // exists but can't sign in until the email link is clicked.

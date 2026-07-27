@@ -1,13 +1,13 @@
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { Settings } from 'lucide-react-native';
 import { useCallback } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useProfileStats } from '@/lib/queries/logs';
-import { supabase } from '@/lib/supabase';
 import { useSession } from '@/providers/SessionProvider';
 import { ratingColor } from '@/theme/ratingRamp';
-import { useTheme, type ThemePreference } from '@/theme/ThemeProvider';
+import { useTheme } from '@/theme/ThemeProvider';
 
 function StatCard({
   value,
@@ -32,10 +32,10 @@ function StatCard({
 }
 
 export default function ProfileScreen() {
-  const { preference, resolved, setPreference } = useTheme();
+  const { resolved, colors } = useTheme();
   const { session } = useSession();
   const stats = useProfileStats();
-  const options: ThemePreference[] = ['system', 'light', 'dark'];
+  const router = useRouter();
 
   // Refresh stats when the tab regains focus so they reflect newly logged films.
   const { refetch } = stats;
@@ -52,18 +52,22 @@ export default function ProfileScreen() {
   const averageColor =
     average != null ? ratingColor(Math.round(average), resolved) : undefined;
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      Alert.alert('Sign out failed', error.message);
-    }
-  };
-
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
       <ScrollView contentContainerStyle={{ padding: 20, gap: 20 }}>
+        {/* Top bar with settings */}
+        <View className="flex-row justify-end">
+          <Pressable
+            onPress={() => router.push('/settings')}
+            accessibilityLabel="Settings"
+            className="p-1 active:opacity-60"
+          >
+            <Settings size={24} color={colors['--color-text-primary']} />
+          </Pressable>
+        </View>
+
         {/* Identity */}
-        <View className="gap-1 pt-2">
+        <View className="gap-1">
           {displayName ? (
             <Text className="text-2xl font-bold text-text-primary">{displayName}</Text>
           ) : null}
@@ -80,39 +84,6 @@ export default function ProfileScreen() {
             color={averageColor}
           />
         </View>
-
-        {/* Appearance */}
-        <View className="gap-3 rounded-2xl border border-border bg-surface p-4">
-          <Text className="font-semibold text-text-primary">Appearance</Text>
-          <View className="flex-row gap-2">
-            {options.map((option) => (
-              <Pressable
-                key={option}
-                onPress={() => setPreference(option)}
-                className={
-                  option === preference
-                    ? 'rounded-full bg-primary px-4 py-2'
-                    : 'rounded-full bg-surface-alt px-4 py-2'
-                }
-              >
-                <Text
-                  className={
-                    option === preference
-                      ? 'font-semibold text-on-primary'
-                      : 'text-text-muted'
-                  }
-                >
-                  {option}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        {/* Sign out */}
-        <Pressable onPress={signOut} className="items-center py-2 active:opacity-70">
-          <Text className="text-sm text-primary">Sign out</Text>
-        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );

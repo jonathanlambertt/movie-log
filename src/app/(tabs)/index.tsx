@@ -1,14 +1,15 @@
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, FlatList, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { PosterCard } from '@/components/movie/PosterCard';
-import { useMovieSearch, useTrending } from '@/lib/queries/movies';
-import { useTheme } from '@/theme/ThemeProvider';
+import { PosterCard } from "@/components/movie/PosterCard";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { useMovieSearch, useTrending } from "@/lib/queries/movies";
+import { useTheme } from "@/theme/ThemeProvider";
 
 export default function SearchScreen() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const { colors } = useTheme();
   const router = useRouter();
 
@@ -18,22 +19,14 @@ export default function SearchScreen() {
   const active = searching ? search : trending;
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-background">
+    <SafeAreaView edges={["top"]} className="flex-1 bg-background">
       <View className="px-3 pb-3 pt-2">
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Search films"
-          placeholderTextColor={colors['--color-text-faint']}
-          autoCorrect={false}
-          returnKeyType="search"
-          className="h-11 rounded-xl bg-surface px-4 text-base text-text-primary"
-        />
+        <SearchInput value={query} onChangeText={setQuery} />
       </View>
 
       {active.isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color={colors['--color-text-muted']} />
+          <ActivityIndicator color={colors["--color-text-muted"]} />
         </View>
       ) : active.isError ? (
         <View className="flex-1 items-center justify-center px-8">
@@ -63,7 +56,10 @@ export default function SearchScreen() {
             <PosterCard
               movie={item}
               onPress={() =>
-                router.push({ pathname: '/movie/[id]', params: { id: String(item.id) } })
+                router.push({
+                  pathname: "/movie/[id]",
+                  params: { id: String(item.id) },
+                })
               }
             />
           )}
