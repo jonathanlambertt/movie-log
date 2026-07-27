@@ -7,9 +7,9 @@ A mobile-first movie logging app — a personal, single-player film diary
 Built with Expo + React Native, styled with NativeWind, backed by Supabase,
 with movie metadata from TMDB.
 
-> **Status:** MVP in active development. The scaffold (theming, navigation,
-> auth, data layer, TMDB proxy, rating input) is in place; feature screens are
-> being built out.
+> **Status:** MVP feature-complete and in polish. Auth, search, movie detail,
+> the log flow, diary, watchlist, and profile stats are all working; remaining
+> work is refinement (see Not yet wired below).
 
 ## Stack
 
@@ -31,8 +31,14 @@ with movie metadata from TMDB.
   a rewatch is a new row, so rating history is preserved)
 - **Watchlist**: one-tap toggle from any film
 - **Profile**: basic stats (films this year, average rating), theme override
-- Your rating shows as a colored pill on films you've logged; community
-  average shows in muted text on films you haven't
+- Your rating shows as a colored pill on films you've logged (currently on the
+  movie detail and diary screens)
+
+### Not yet wired
+
+- Rating pills on the search / watchlist poster grids (needs batch-fetching
+  ratings for a list of films)
+- Community average is hidden in the UI for now (the data still flows from TMDB)
 
 ## Getting started
 
@@ -98,7 +104,8 @@ src/
   app/              # Expo Router routes (file-based)
     (auth)/         #   sign-in / sign-up
     (tabs)/         #   Search, Diary, Watchlist, Profile
-    log.tsx         #   log flow (modal sheet)
+    movie/[id].tsx  #   film detail (Log + watchlist toggle)
+    log/            #   log flow (modal): index = pick film, [filmId] = rate & save
   components/       # UI, tab bar, rating (scrubber + pill), movie
   lib/              # supabase client, tmdb wrappers, query hooks, db types
   providers/        # session provider
