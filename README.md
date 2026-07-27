@@ -1,56 +1,125 @@
-# Welcome to your Expo app 👋
+# movielog
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile-first movie logging app — a personal, single-player film diary
+(think Letterboxd, minus the social layer). Log films you've watched with a
+1–10 rating, keep a watchlist, and see your rating history over time.
 
-## Get started
+Built with Expo + React Native, styled with NativeWind, backed by Supabase,
+with movie metadata from TMDB.
 
-1. Install dependencies
+> **Status:** MVP in active development. The scaffold (theming, navigation,
+> auth, data layer, TMDB proxy, rating input) is in place; feature screens are
+> being built out.
 
-   ```bash
-   npm install
-   ```
+## Stack
 
-2. Start the app
+| Area | Choice |
+| --- | --- |
+| App | Expo (SDK 57), React Native 0.86, TypeScript |
+| Navigation | Expo Router (file-based, custom tab bar) |
+| Styling | NativeWind v4 (Tailwind), semantic theme tokens, dark/light |
+| Animation | Reanimated 4, Gesture Handler, expo-haptics |
+| Backend | Supabase (Postgres, Auth, Edge Functions) |
+| Data fetching | TanStack Query |
+| Movie data | TMDB, proxied through a Supabase Edge Function |
 
-   ```bash
-   npx expo start
-   ```
+## MVP scope
 
-In the output, you'll find options to open the app in a
+- **Search** films via TMDB (empty state = popular this week)
+- **Log** a film: watch date, 1–10 rating, rewatch flag, optional review
+- **Diary**: reverse-chron log of watches, grouped by month (append-only —
+  a rewatch is a new row, so rating history is preserved)
+- **Watchlist**: one-tap toggle from any film
+- **Profile**: basic stats (films this year, average rating), theme override
+- Your rating shows as a colored pill on films you've logged; community
+  average shows in muted text on films you haven't
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Getting started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Prerequisites
 
-## Get a fresh project
+- Node.js 20.19+ (24 recommended — see `.nvmrc`)
+- iOS Simulator (Xcode) and/or Android emulator
+- A [Supabase](https://supabase.com) project
+- A [TMDB](https://www.themoviedb.org/settings/api) API Read Access Token
 
-When you're ready, run:
+### 1. Install
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Environment
 
-### Other setup steps
+Copy the example env and fill in your Supabase project's URL and publishable
+(anon) key from **Project Settings → API Keys**:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+cp .env.example .env
+```
 
-## Learn more
+```
+EXPO_PUBLIC_SUPABASE_URL=https://<your-ref>.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=<your-publishable-key>
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+The TMDB key is **not** stored here — it lives server-side (see below).
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 3. Supabase
 
-## Join the community
+Apply the schema and generate types:
 
-Join our community of developers creating universal apps.
+```bash
+supabase link --project-ref <your-ref>
+supabase db push
+supabase gen types typescript --linked > src/lib/database.types.ts
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 4. TMDB edge function
+
+The TMDB token stays server-side, and the function is the only writer of the
+shared `films` cache. Set the secret and deploy:
+
+```bash
+supabase secrets set TMDB_API_KEY=<your-tmdb-read-access-token>
+supabase functions deploy tmdb
+```
+
+### 5. Run
+
+```bash
+npm run ios      # or: npm run android
+```
+
+## Project structure
+
+```
+src/
+  app/              # Expo Router routes (file-based)
+    (auth)/         #   sign-in / sign-up
+    (tabs)/         #   Search, Diary, Watchlist, Profile
+    log.tsx         #   log flow (modal sheet)
+  components/       # UI, tab bar, rating (scrubber + pill), movie
+  lib/              # supabase client, tmdb wrappers, query hooks, db types
+  providers/        # session provider
+  theme/            # color tokens, ThemeProvider, rating ramp
+supabase/
+  migrations/       # schema + RLS
+  functions/tmdb/   # TMDB proxy (Deno)
+```
+
+## Architecture notes
+
+- **Theming**: components use semantic Tailwind tokens (`bg-background`,
+  `text-muted`, `primary`…) that resolve to CSS variables injected at runtime
+  by `ThemeProvider`, so dark/light switches instantly. Actual hex values live
+  only in `src/theme/colors.ts`.
+- **Rating colors** are a separate red→amber→green ramp (`src/theme/ratingRamp.ts`),
+  never the violet primary.
+- **Append-only logs**: the `logs` table is an event stream — rewatches insert
+  new rows and never overwrite a rating, preserving history.
+- **Row-level security**: every user-data table is scoped to `auth.uid()`; the
+  shared `films` cache is read-only to clients and written only by the edge
+  function's service role.
+- **TMDB key** never ships in the app bundle — all TMDB access goes through the
+  authenticated edge function.
