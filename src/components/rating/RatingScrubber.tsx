@@ -25,12 +25,19 @@ type Props = {
   onChange: (value: number) => void;
   /** Fires when the confirm button is pressed — wire to the save mutation. */
   onConfirm?: (value: number) => void;
+  /** Hide the built-in confirm button (e.g. when the screen owns the CTA). */
+  showConfirm?: boolean;
 };
 
 // The signature input: a 1–10 integer ruler. Drag/tap to scrub, snapping to
 // the nearest detent; each change fires a selection haptic and pulses the big
 // number. Starts empty. Honors reduce-motion. See spec in the rating ramp.
-export function RatingScrubber({ value, onChange, onConfirm }: Props) {
+export function RatingScrubber({
+  value,
+  onChange,
+  onConfirm,
+  showConfirm = true,
+}: Props) {
   const { resolved, colors } = useTheme();
   const reducedMotion = useReducedMotion();
 
@@ -159,22 +166,24 @@ export function RatingScrubber({ value, onChange, onConfirm }: Props) {
       </GestureDetector>
 
       {/* Confirm */}
-      <Pressable
-        disabled={rating == null}
-        onPress={() => rating != null && onConfirm?.(rating)}
-        style={rating != null ? { backgroundColor: color } : undefined}
-        className="mt-5 items-center rounded-xl bg-surface-alt py-3.5"
-      >
-        <Text
-          className={
-            rating != null
-              ? 'text-[15px] font-bold text-white'
-              : 'text-[15px] font-bold text-text-faint'
-          }
+      {showConfirm && (
+        <Pressable
+          disabled={rating == null}
+          onPress={() => rating != null && onConfirm?.(rating)}
+          style={rating != null ? { backgroundColor: color } : undefined}
+          className="mt-5 items-center rounded-xl bg-surface-alt py-3.5"
         >
-          {rating != null ? `Log film · ${rating}` : 'Rate to log'}
-        </Text>
-      </Pressable>
+          <Text
+            className={
+              rating != null
+                ? 'text-[15px] font-bold text-white'
+                : 'text-[15px] font-bold text-text-faint'
+            }
+          >
+            {rating != null ? `Log film · ${rating}` : 'Rate to log'}
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 }

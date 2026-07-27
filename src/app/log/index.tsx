@@ -1,31 +1,54 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { PosterCard } from '@/components/movie/PosterCard';
+import { MovieRow } from '@/components/movie/MovieRow';
 import { useMovieSearch, useTrending } from '@/lib/queries/movies';
+import type { TmdbMovie } from '@/lib/tmdb';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export default function SearchScreen() {
+// Step 1 of the log flow: search TMDB and pick a film. Trending shows before
+// the user types so the sheet is never a blank bar.
+export default function LogPickFilm() {
   const [query, setQuery] = useState('');
-  const { colors } = useTheme();
   const router = useRouter();
+  const { colors } = useTheme();
 
   const searching = query.trim().length > 0;
   const trending = useTrending();
   const search = useMovieSearch(query);
   const active = searching ? search : trending;
 
+  const pick = (movie: TmdbMovie) => {
+    router.push({
+      pathname: '/log/[filmId]',
+      params: {
+        filmId: String(movie.id),
+        title: movie.title,
+        poster: movie.posterPath ?? '',
+        releaseDate: movie.releaseDate ?? '',
+      },
+    });
+  };
+
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
-      <View className="px-3 pb-3 pt-2">
+      <View className="flex-row items-center justify-between px-4 pb-1 pt-1">
+        <Text className="text-lg font-bold text-text-primary">Log a film</Text>
+        <Pressable onPress={() => router.back()} className="active:opacity-60">
+          <Text className="text-base text-primary">Cancel</Text>
+        </Pressable>
+      </View>
+
+      <View className="px-4 py-2">
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder="Search films"
           placeholderTextColor={colors['--color-text-faint']}
           autoCorrect={false}
+          autoFocus
           returnKeyType="search"
           className="h-11 rounded-xl bg-surface px-4 text-base text-text-primary"
         />
@@ -35,21 +58,14 @@ export default function SearchScreen() {
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator color={colors['--color-text-muted']} />
         </View>
-      ) : active.isError ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <Text className="text-center text-sm text-text-muted">
-            Couldn't load films. Check your connection and try again.
-          </Text>
-        </View>
       ) : (
         <FlatList
           data={active.data?.results}
           keyExtractor={(movie) => String(movie.id)}
-          numColumns={3}
-          contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 24 }}
+          keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
             searching ? null : (
-              <Text className="px-1 pb-2 text-sm font-semibold text-text-muted">
+              <Text className="px-4 pb-1 pt-2 text-sm font-semibold text-text-muted">
                 Popular this week
               </Text>
             )
@@ -60,12 +76,7 @@ export default function SearchScreen() {
             </Text>
           }
           renderItem={({ item }) => (
-            <PosterCard
-              movie={item}
-              onPress={() =>
-                router.push({ pathname: '/movie/[id]', params: { id: String(item.id) } })
-              }
-            />
+            <MovieRow movie={item} onPress={() => pick(item)} />
           )}
         />
       )}

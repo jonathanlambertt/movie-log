@@ -24,6 +24,13 @@ export function posterUrl(
   return path ? `${IMAGE_BASE}/${width}${path}` : null;
 }
 
+export function backdropUrl(
+  path: string | null,
+  width: 'w780' | 'w1280' = 'w780',
+) {
+  return path ? `${IMAGE_BASE}/${width}${path}` : null;
+}
+
 async function invokeTmdb<T>(path: string): Promise<T> {
   const { data, error } = await supabase.functions.invoke<T>(`tmdb/${path}`, {
     method: 'GET',

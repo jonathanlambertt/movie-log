@@ -1,6 +1,6 @@
-import type { BottomTabBarProps } from 'expo-router/js-tabs';
-import * as Haptics from 'expo-haptics';
-import { useRouter } from 'expo-router';
+import * as Haptics from "expo-haptics";
+import { useRouter } from "expo-router";
+import type { BottomTabBarProps } from "expo-router/js-tabs";
 import {
   Bookmark,
   BookOpen,
@@ -8,12 +8,12 @@ import {
   Search,
   User,
   type LucideIcon,
-} from 'lucide-react-native';
-import { Fragment } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+} from "lucide-react-native";
+import { Fragment } from "react";
+import { Pressable, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useTheme } from '@/theme/ThemeProvider';
+import { useTheme } from "@/theme/ThemeProvider";
 
 const ICONS: Record<string, LucideIcon> = {
   index: Search,
@@ -26,19 +26,23 @@ const ICONS: Record<string, LucideIcon> = {
 // tabBarButton can't do — hence this fully custom bar. The button sits
 // absolutely positioned inside a fixed-width center slot between the
 // Diary and Watchlist tabs.
-export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export function CustomTabBar({
+  state,
+  descriptors,
+  navigation,
+}: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const router = useRouter();
 
   const openLogFlow = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/log');
+    router.push("/log");
   };
 
   return (
     <View
-      className="flex-row border-t border-border bg-background"
+      className="flex-row bg-background"
       style={{ paddingBottom: insets.bottom }}
     >
       {state.routes.map((route, index) => {
@@ -49,7 +53,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
 
         const onPress = () => {
           const event = navigation.emit({
-            type: 'tabPress',
+            type: "tabPress",
             target: route.key,
             canPreventDefault: true,
           });
@@ -66,9 +70,13 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                 <Pressable
                   onPress={openLogFlow}
                   accessibilityLabel="Log a film"
-                  className="absolute -top-6 h-14 w-14 items-center justify-center rounded-full border-4 border-background bg-primary active:opacity-90"
+                  className="absolute -top-4 h-14 w-14 items-center justify-center rounded-full border-background bg-primary active:opacity-90"
                 >
-                  <Plus size={26} color={colors['--color-on-primary']} strokeWidth={2.6} />
+                  <Plus
+                    size={26}
+                    color={colors["--color-on-primary"]}
+                    strokeWidth={2.6}
+                  />
                 </Pressable>
               </View>
             )}
@@ -80,14 +88,18 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
             >
               <Icon
                 size={24}
-                color={isFocused ? colors['--color-primary'] : colors['--color-text-faint']}
+                color={
+                  isFocused
+                    ? colors["--color-primary"]
+                    : colors["--color-text-faint"]
+                }
                 strokeWidth={isFocused ? 2.4 : 1.8}
               />
               <Text
                 className={
                   isFocused
-                    ? 'text-[10px] font-semibold text-primary'
-                    : 'text-[10px] text-text-faint'
+                    ? "text-[10px] font-semibold text-primary"
+                    : "text-[10px] text-text-faint"
                 }
               >
                 {label}

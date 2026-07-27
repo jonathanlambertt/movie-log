@@ -10,6 +10,14 @@ export function useTrending() {
   });
 }
 
+export function useMovie(id: number) {
+  return useQuery({
+    queryKey: ['tmdb', 'movie', id],
+    queryFn: () => tmdbApi.movie(id),
+    staleTime: 60 * 60 * 1000, // details rarely change
+  });
+}
+
 export function useMovieSearch(query: string) {
   const trimmed = query.trim();
   return useQuery({

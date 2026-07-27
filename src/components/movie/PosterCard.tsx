@@ -1,13 +1,19 @@
 import { Image } from 'expo-image';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { posterUrl, type TmdbMovie } from '@/lib/tmdb';
 
-export function PosterCard({ movie }: { movie: TmdbMovie }) {
+export function PosterCard({
+  movie,
+  onPress,
+}: {
+  movie: TmdbMovie;
+  onPress?: () => void;
+}) {
   const uri = posterUrl(movie.posterPath);
 
   return (
-    <View className="w-1/3 p-1">
+    <Pressable onPress={onPress} className="w-1/3 p-1 active:opacity-80">
       <View className="aspect-[2/3] overflow-hidden rounded-lg bg-surface">
         {uri ? (
           <Image
@@ -24,6 +30,6 @@ export function PosterCard({ movie }: { movie: TmdbMovie }) {
           </View>
         )}
       </View>
-    </View>
+    </Pressable>
   );
 }
