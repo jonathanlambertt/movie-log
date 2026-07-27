@@ -8,9 +8,11 @@
     "scheme": "movielog",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.jonathan.movielog",
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.jonathan.movielog",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
