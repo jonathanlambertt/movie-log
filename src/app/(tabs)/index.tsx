@@ -8,6 +8,10 @@ import { SearchInput } from "@/components/ui/SearchInput";
 import { useMovieSearch, useTrending } from "@/lib/queries/movies";
 import { useTheme } from "@/theme/ThemeProvider";
 
+// Custom title font, bundled from assets/fonts and loaded via useFonts in the
+// root layout. The string must match the key registered there.
+const TITLE_FONT = "Vadelma-Medium";
+
 export default function SearchScreen() {
   const [query, setQuery] = useState("");
   const { colors } = useTheme();
@@ -20,7 +24,15 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView edges={["top"]} className="flex-1 bg-background">
-      <View className="px-3 pb-3 pt-2">
+      <View className="items-center pb-1 pt-2">
+        <Text
+          style={{ fontFamily: TITLE_FONT, fontSize: 35, letterSpacing: 0.5 }}
+          className="text-text-primary"
+        >
+          cinebook
+        </Text>
+      </View>
+      <View className="px-3 pb-3 pt-1">
         <SearchInput value={query} onChangeText={setQuery} />
       </View>
 
