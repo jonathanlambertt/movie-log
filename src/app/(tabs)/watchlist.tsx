@@ -130,6 +130,9 @@ export default function WatchlistScreen() {
         />
       ) : mode === 'list' ? (
         <FlatList
+          // Distinct keys across the two branches: without them React reuses
+          // one FlatList instance and mutating numColumns throws an invariant.
+          key="list"
           data={watchlist.data}
           keyExtractor={(item) => String(item.film_id)}
           contentContainerStyle={{ paddingBottom: 24 }}
@@ -147,6 +150,7 @@ export default function WatchlistScreen() {
         />
       ) : (
         <FlatList
+          key="grid"
           data={watchlist.data}
           keyExtractor={(item) => String(item.film_id)}
           numColumns={3}
