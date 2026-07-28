@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { writeRating } from '@/lib/queries/ratings';
 import { supabase } from '@/lib/supabase';
 import { tmdbApi } from '@/lib/tmdb';
 
@@ -15,23 +16,6 @@ export function useHasLoggedFilm(filmId: number) {
         .eq('film_id', filmId);
       if (error) throw error;
       return (count ?? 0) > 0;
-    },
-  });
-}
-
-// The current user's latest rating for a film (from the my_film_ratings view,
-// which picks the most recent log per film). null = not logged.
-export function useMyRating(filmId: number) {
-  return useQuery({
-    queryKey: ['logs', 'myRating', filmId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('my_film_ratings')
-        .select('rating')
-        .eq('film_id', filmId)
-        .maybeSingle();
-      if (error) throw error;
-      return data?.rating ?? null;
     },
   });
 }
@@ -119,10 +103,21 @@ export function useCreateLog() {
         review: input.review,
       });
       if (error) throw error;
+
+      // The watch you just logged is your newest opinion, so it becomes the
+      // current rating too. The log keeps its own rating for diary history.
+      // The film was cached above, so this skips the TMDB round trip.
+      await writeRating({
+        userId: input.userId,
+        filmId: input.filmId,
+        rating: input.rating,
+      });
     },
     onSuccess: () => {
-      // Refresh anything reading logs (diary, stats, rewatch checks).
+      // Refresh anything reading logs (diary, stats, rewatch checks) plus the
+      // rating pill, which now reads the ratings table.
       queryClient.invalidateQueries({ queryKey: ['logs'] });
+      queryClient.invalidateQueries({ queryKey: ['ratings'] });
     },
   });
 }

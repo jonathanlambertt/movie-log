@@ -33,6 +33,7 @@ function RootNavigator() {
         <Stack.Screen name="movie/[id]" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="log" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="rate/[filmId]" options={{ presentation: 'modal' }} />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" />

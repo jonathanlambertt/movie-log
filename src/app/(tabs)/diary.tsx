@@ -1,13 +1,12 @@
-import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Repeat } from 'lucide-react-native';
+import { BookOpen, Repeat } from 'lucide-react-native';
 import { useCallback } from 'react';
-import { ActivityIndicator, Pressable, SectionList, Text, View } from 'react-native';
+import { ActivityIndicator, SectionList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { RatingPill } from '@/components/rating/RatingPill';
+import { FilmRow } from '@/components/movie/FilmRow';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { useDiary, type DiaryLog } from '@/lib/queries/logs';
-import { posterUrl } from '@/lib/tmdb';
 import { useTheme } from '@/theme/ThemeProvider';
 
 // Parse a 'YYYY-MM-DD' as local midnight (avoids the UTC off-by-one that
@@ -76,65 +75,51 @@ export default function DiaryScreen() {
         Diary
       </Text>
 
-      <SectionList
-        sections={sections}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 24 }}
-        stickySectionHeadersEnabled={false}
-        ListEmptyComponent={
-          <Text className="px-8 pt-16 text-center text-sm text-text-faint">
-            No films logged yet. Tap the + to log your first.
-          </Text>
-        }
-        renderSectionHeader={({ section }) => (
-          <Text className="bg-background px-4 pb-1 pt-4 text-sm font-semibold text-text-muted">
-            {section.title}
-          </Text>
-        )}
-        renderItem={({ item }) => {
-          const uri = posterUrl(item.films?.poster_path ?? null, 'w185');
-          const year = item.films?.release_date
-            ? item.films.release_date.slice(0, 4)
-            : null;
-          return (
-            <Pressable
+      {sections.length === 0 ? (
+        <EmptyState
+          icon={BookOpen}
+          title="Your diary is empty"
+          message="Log the films you watch to build a history of what you've seen and how you rated it."
+          actionTitle="Log your first film"
+          onAction={() => router.push('/log')}
+        />
+      ) : (
+        <SectionList
+          sections={sections}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 24 }}
+          stickySectionHeadersEnabled={false}
+          renderSectionHeader={({ section }) => (
+            <Text className="bg-background px-4 pb-1 pt-4 text-sm font-semibold text-text-muted">
+              {section.title}
+            </Text>
+          )}
+          renderItem={({ item }) => (
+            <FilmRow
+              filmId={item.film_id}
+              title={item.films?.title ?? 'Unknown film'}
+              posterPath={item.films?.poster_path ?? null}
+              year={item.films?.release_date?.slice(0, 4) ?? null}
+              dateLabel={dayLabel(item.watched_on)}
+              rating={item.rating}
+              badge={
+                item.is_rewatch ? (
+                  <View className="flex-row items-center gap-1">
+                    <Repeat size={12} color={colors['--color-text-faint']} />
+                    <Text className="text-xs text-text-faint">Rewatch</Text>
+                  </View>
+                ) : null
+              }
               onPress={() =>
                 router.push({
                   pathname: '/movie/[id]',
                   params: { id: String(item.film_id) },
                 })
               }
-              className="flex-row items-center gap-3 px-4 py-2 active:bg-surface"
-            >
-              <View className="h-16 w-11 overflow-hidden rounded bg-surface">
-                {uri ? (
-                  <Image source={{ uri }} style={{ flex: 1 }} contentFit="cover" />
-                ) : null}
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-medium text-text-primary" numberOfLines={1}>
-                  {item.films?.title ?? 'Unknown film'}
-                  {year ? (
-                    <Text className="font-normal text-text-faint">  {year}</Text>
-                  ) : null}
-                </Text>
-                <View className="mt-0.5 flex-row items-center gap-2">
-                  <Text className="text-sm text-text-muted">
-                    {dayLabel(item.watched_on)}
-                  </Text>
-                  {item.is_rewatch && (
-                    <View className="flex-row items-center gap-1">
-                      <Repeat size={12} color={colors['--color-text-faint']} />
-                      <Text className="text-xs text-text-faint">Rewatch</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-              {item.rating != null && <RatingPill rating={item.rating} />}
-            </Pressable>
-          );
-        }}
-      />
+            />
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }

@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Bookmark, ChevronLeft, Plus } from 'lucide-react-native';
+import { Bookmark, ChevronLeft, ChevronRight, Plus } from 'lucide-react-native';
 import {
   ActivityIndicator,
   Pressable,
@@ -11,8 +11,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RatingPill } from '@/components/rating/RatingPill';
-import { useMyRating } from '@/lib/queries/logs';
 import { useMovie } from '@/lib/queries/movies';
+import { useMyRating } from '@/lib/queries/ratings';
 import { useIsWatchlisted, useToggleWatchlist } from '@/lib/queries/watchlist';
 import { backdropUrl, posterUrl } from '@/lib/tmdb';
 import { useSession } from '@/providers/SessionProvider';
@@ -47,17 +47,26 @@ export default function MovieDetail() {
     });
   };
 
+  // Both modals take the same film params, so the detail screen can hand off
+  // without either flow needing to refetch the film.
+  const filmParams = () =>
+    movie.data && {
+      filmId: String(movie.data.id),
+      title: movie.data.title,
+      poster: movie.data.posterPath ?? '',
+      releaseDate: movie.data.releaseDate ?? '',
+    };
+
   const openLog = () => {
-    if (!movie.data) return;
-    router.push({
-      pathname: '/log/[filmId]',
-      params: {
-        filmId: String(movie.data.id),
-        title: movie.data.title,
-        poster: movie.data.posterPath ?? '',
-        releaseDate: movie.data.releaseDate ?? '',
-      },
-    });
+    const params = filmParams();
+    if (!params) return;
+    router.push({ pathname: '/log/[filmId]', params });
+  };
+
+  const openRate = () => {
+    const params = filmParams();
+    if (!params) return;
+    router.push({ pathname: '/rate/[filmId]', params });
   };
 
   if (movie.isLoading) {
@@ -129,13 +138,25 @@ export default function MovieDetail() {
             </View>
           </View>
 
-          {/* Your rating (if logged) */}
-          {myRating.data != null && (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-sm text-text-muted">Your rating</Text>
-              <RatingPill rating={myRating.data} />
-            </View>
-          )}
+          {/* Your rating — tap to rate without logging a watch */}
+          <Pressable
+            onPress={openRate}
+            accessibilityRole="button"
+            accessibilityLabel={
+              myRating.data != null ? 'Change your rating' : 'Rate this film'
+            }
+            className="flex-row items-center gap-2 active:opacity-60"
+          >
+            {myRating.data != null ? (
+              <>
+                <Text className="text-sm text-text-muted">Your rating</Text>
+                <RatingPill rating={myRating.data} />
+              </>
+            ) : (
+              <Text className="text-sm text-text-muted">Rate this film</Text>
+            )}
+            <ChevronRight size={16} color={colors['--color-text-faint']} />
+          </Pressable>
 
           {/* Overview */}
           {film.overview ? (

@@ -1,5 +1,6 @@
-import { Link } from 'expo-router';
-import { useState } from 'react';
+import { Link } from "expo-router";
+import { Lock, Mail, User } from "lucide-react-native";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -7,16 +8,18 @@ import {
   Pressable,
   Text,
   View,
-} from 'react-native';
+} from "react-native";
 
-import { Button } from '@/components/ui/Button';
-import { TextField } from '@/components/ui/TextField';
-import { supabase } from '@/lib/supabase';
+import { Button } from "@/components/ui/Button";
+import { FieldInput } from "@/components/ui/FieldInput";
+import { RatingGradient } from "@/components/ui/RatingGradient";
+import { Wordmark } from "@/components/ui/Wordmark";
+import { supabase } from "@/lib/supabase";
 
 export default function SignUpScreen() {
-  const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const signUp = async () => {
@@ -32,7 +35,7 @@ export default function SignUpScreen() {
     });
     setLoading(false);
     if (error) {
-      Alert.alert('Sign up failed', error.message);
+      Alert.alert("Sign up failed", error.message);
       return;
     }
     // Supabase hides "email already registered" to prevent enumeration: it
@@ -40,8 +43,8 @@ export default function SignUpScreen() {
     // empty identities array. Detect that and point the user to sign in.
     if (data.user && data.user.identities?.length === 0) {
       Alert.alert(
-        'Email already registered',
-        'An account with this email already exists. Try signing in instead.',
+        "Email already registered",
+        "An account with this email already exists. Try signing in instead.",
       );
       return;
     }
@@ -49,51 +52,67 @@ export default function SignUpScreen() {
       // Email confirmation is still enabled in Supabase — the account
       // exists but can't sign in until the email link is clicked.
       Alert.alert(
-        'Confirm your email',
-        'Check your inbox for a confirmation link, then sign in.',
+        "Confirm your email",
+        "Check your inbox for a confirmation link, then sign in.",
       );
     }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-background"
     >
-      <View className="flex-1 justify-center gap-4 px-6">
-        <Text className="mb-4 text-center text-3xl font-bold text-text-primary">
-          Create account
-        </Text>
-        <TextField
-          label="Display name"
+      <RatingGradient />
+      <View className="flex-1 justify-center gap-3 px-6">
+        <View className="mb-6 items-center gap-2">
+          <Wordmark />
+          <Text className="px-4 text-center text-xl leading-5 text-text-muted">
+            Get started by creating your profile!
+          </Text>
+        </View>
+        <FieldInput
+          icon={User}
+          placeholder="Display name"
           value={displayName}
           onChangeText={setDisplayName}
           autoComplete="name"
+          textContentType="name"
+          returnKeyType="next"
         />
-        <TextField
-          label="Email"
+        <FieldInput
+          icon={Mail}
+          placeholder="Email"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
           autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
         />
-        <TextField
-          label="Password"
+        <FieldInput
+          icon={Lock}
+          placeholder="Password"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          secure
           autoComplete="new-password"
+          textContentType="newPassword"
+          returnKeyType="go"
+          onSubmitEditing={signUp}
         />
         <Button
-          title="Sign up"
+          title="Create account"
           onPress={signUp}
           loading={loading}
           disabled={!email.trim() || password.length < 6}
         />
         <Link href="/sign-in" asChild>
           <Pressable className="items-center py-2 active:opacity-70">
-            <Text className="text-sm text-primary">Already have an account? Sign in</Text>
+            <Text className="text-sm text-primary">
+              Already have an account? Sign in
+            </Text>
           </Pressable>
         </Link>
       </View>

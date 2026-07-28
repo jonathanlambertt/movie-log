@@ -1,5 +1,6 @@
-import { Link } from 'expo-router';
-import { useState } from 'react';
+import { Link } from "expo-router";
+import { Lock, Mail } from "lucide-react-native";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -7,15 +8,17 @@ import {
   Pressable,
   Text,
   View,
-} from 'react-native';
+} from "react-native";
 
-import { Button } from '@/components/ui/Button';
-import { TextField } from '@/components/ui/TextField';
-import { supabase } from '@/lib/supabase';
+import { Button } from "@/components/ui/Button";
+import { FieldInput } from "@/components/ui/FieldInput";
+import { RatingGradient } from "@/components/ui/RatingGradient";
+import { Wordmark } from "@/components/ui/Wordmark";
+import { supabase } from "@/lib/supabase";
 
 export default function SignInScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const signIn = async () => {
@@ -26,7 +29,7 @@ export default function SignInScreen() {
     });
     setLoading(false);
     if (error) {
-      Alert.alert('Sign in failed', error.message);
+      Alert.alert("Sign in failed", error.message);
     }
     // On success onAuthStateChange updates the session and the root
     // Stack.Protected guard swaps this screen out for the tabs.
@@ -34,28 +37,38 @@ export default function SignInScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-background"
     >
-      <View className="flex-1 justify-center gap-4 px-6">
-        <View className="mb-4 items-center gap-1">
-          <Text className="text-3xl font-bold text-text-primary">movielog</Text>
-          <Text className="text-sm text-text-muted">your film diary</Text>
+      <RatingGradient />
+      <View className="flex-1 justify-center gap-3 px-6">
+        <View className="mb-6 items-center gap-2">
+          <Wordmark />
+          <Text className="px-4 text-center text-xl leading-5 text-text-muted">
+            Your personal film diary.
+          </Text>
         </View>
-        <TextField
-          label="Email"
+        <FieldInput
+          icon={Mail}
+          placeholder="Email"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
           autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
         />
-        <TextField
-          label="Password"
+        <FieldInput
+          icon={Lock}
+          placeholder="Password"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          secure
           autoComplete="current-password"
+          textContentType="password"
+          returnKeyType="go"
+          onSubmitEditing={signIn}
         />
         <Button
           title="Sign in"

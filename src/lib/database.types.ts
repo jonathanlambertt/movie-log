@@ -153,6 +153,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ratings: {
+        Row: {
+          film_id: number
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          film_id: number
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          film_id?: number
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_film_id_fkey"
+            columns: ["film_id"]
+            isOneToOne: false
+            referencedRelation: "films"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ratings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       watchlist: {
         Row: {
           created_at: string
@@ -188,31 +224,7 @@ export type Database = {
       }
     }
     Views: {
-      my_film_ratings: {
-        Row: {
-          film_id: number | null
-          log_id: string | null
-          rating: number | null
-          user_id: string | null
-          watched_on: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "logs_film_id_fkey"
-            columns: ["film_id"]
-            isOneToOne: false
-            referencedRelation: "films"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "logs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never

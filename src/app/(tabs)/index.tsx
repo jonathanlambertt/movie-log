@@ -5,12 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PosterCard } from "@/components/movie/PosterCard";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { useMovieSearch, useTrending } from "@/lib/queries/movies";
 import { useTheme } from "@/theme/ThemeProvider";
-
-// Custom title font, bundled from assets/fonts and loaded via useFonts in the
-// root layout. The string must match the key registered there.
-const TITLE_FONT = "Vadelma-Medium";
 
 export default function SearchScreen() {
   const [query, setQuery] = useState("");
@@ -25,12 +22,7 @@ export default function SearchScreen() {
   return (
     <SafeAreaView edges={["top"]} className="flex-1 bg-background">
       <View className="items-center pb-1 pt-2">
-        <Text
-          style={{ fontFamily: TITLE_FONT, fontSize: 35, letterSpacing: 0.5 }}
-          className="text-text-primary"
-        >
-          cinebook
-        </Text>
+        <Wordmark />
       </View>
       <View className="px-3 pb-3 pt-1">
         <SearchInput value={query} onChangeText={setQuery} />
@@ -54,7 +46,7 @@ export default function SearchScreen() {
           contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 24 }}
           ListHeaderComponent={
             searching ? null : (
-              <Text className="px-1 pb-2 text-sm font-semibold text-text-muted">
+              <Text className="px-1 pb-2 text-base font-semibold text-text-muted">
                 Popular this week
               </Text>
             )

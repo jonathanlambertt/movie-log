@@ -49,6 +49,12 @@
         "projectId": "a1268a9d-1fba-45e0-a7bd-8021318ce563"
       }
     },
-    "owner": "jonathanlambert"
+    "owner": "jonathanlambert",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a1268a9d-1fba-45e0-a7bd-8021318ce563"
+    }
   }
 }

@@ -4,12 +4,16 @@ A mobile-first movie logging app — a personal, single-player film diary
 (think Letterboxd, minus the social layer). Log films you've watched with a
 1–10 rating, keep a watchlist, and see your rating history over time.
 
+The app ships under the wordmark **Cinebook**; `movielog` is the repo, package
+name, and Expo slug.
+
 Built with Expo + React Native, styled with NativeWind, backed by Supabase,
 with movie metadata from TMDB.
 
 > **Status:** MVP feature-complete and in polish. Auth, search, movie detail,
-> the log flow, diary, watchlist, and profile stats are all working; remaining
-> work is refinement (see Not yet wired below).
+> the log flow, diary, watchlist, profile stats, and settings all work, and EAS
+> build profiles are configured for on-device testing; remaining work is
+> refinement (see Not yet wired below).
 
 ## Stack
 
@@ -18,26 +22,36 @@ with movie metadata from TMDB.
 | App | Expo (SDK 57), React Native 0.86, TypeScript |
 | Navigation | Expo Router (file-based, custom tab bar) |
 | Styling | NativeWind v4 (Tailwind), semantic theme tokens, dark/light |
+| Type | Vadelma Medium (expo-font) for the Cinebook wordmark |
 | Animation | Reanimated 4, Gesture Handler, expo-haptics |
 | Backend | Supabase (Postgres, Auth, Edge Functions) |
 | Data fetching | TanStack Query |
 | Movie data | TMDB, proxied through a Supabase Edge Function |
+| Builds | EAS Build (dev client, internal-distribution preview, production) |
+| OTA | EAS Update (expo-updates), runtime version tied to `version` |
 
 ## MVP scope
 
+- **Auth**: email/password sign-in and sign-up, with friendly handling of
+  already-registered emails and pending email confirmation
 - **Search** films via TMDB (empty state = popular this week)
+- **Rate** any film without logging a watch — tap the rating row on film detail
 - **Log** a film: watch date, 1–10 rating, rewatch flag, optional review
 - **Diary**: reverse-chron log of watches, grouped by month (append-only —
   a rewatch is a new row, so rating history is preserved)
-- **Watchlist**: one-tap toggle from any film
-- **Profile**: basic stats (films this year, average rating), theme override
-- Your rating shows as a colored pill on films you've logged (currently on the
-  movie detail and diary screens)
+- **Watchlist**: one-tap toggle from any film, shown as a poster grid or an
+  info-rich list (the choice persists across launches)
+- **Profile**: stats for films this year, total films logged, and average
+  rating (tinted with the rating ramp)
+- **Settings** (gear on Profile): appearance override — system / light / dark —
+  and sign out
+- Your rating shows as a colored pill on the movie detail screen, diary rows,
+  and watchlist list rows
 
 ### Not yet wired
 
-- Rating pills on the search / watchlist poster grids (needs batch-fetching
-  ratings for a list of films)
+- Rating pills on the poster grids (search and watchlist grid view) — the list
+  views have them; the grids show bare posters
 - Community average is hidden in the UI for now (the data still flows from TMDB)
 
 ## Getting started
@@ -97,6 +111,42 @@ supabase functions deploy tmdb
 npm run ios      # or: npm run android
 ```
 
+## Device builds (EAS)
+
+`eas.json` defines three profiles:
+
+| Profile | What it is |
+| --- | --- |
+| `development` | Dev client, internal distribution — for running the JS bundle on a real device |
+| `preview` | Internal-distribution release build, auto-incrementing version |
+| `production` | Store build, auto-incrementing version |
+
+Each profile pulls its `EXPO_PUBLIC_*` values from the matching **EAS
+environment** (`development` / `preview` / `production`) rather than the local
+`.env`, so those variables have to exist server-side before a build:
+
+```bash
+eas env:create --environment preview --name EXPO_PUBLIC_SUPABASE_URL --value https://<your-ref>.supabase.co
+eas env:create --environment preview --name EXPO_PUBLIC_SUPABASE_ANON_KEY --value <your-publishable-key>
+
+eas build --profile preview --platform ios
+```
+
+Version numbers come from EAS (`appVersionSource: "remote"`), not `app.json`.
+
+### Over-the-air updates
+
+JS-only changes don't need a rebuild — each build profile subscribes to the
+channel of the same name:
+
+```bash
+eas update --channel preview --message "what changed" --environment preview
+```
+
+`--environment` is required as of SDK 55+. `runtimeVersion` follows the
+`appVersion` policy, so bumping `version` in `app.json` requires a new native
+build before updates flow again. Adding a native module always requires one.
+
 ## Project structure
 
 ```
@@ -104,12 +154,16 @@ src/
   app/              # Expo Router routes (file-based)
     (auth)/         #   sign-in / sign-up
     (tabs)/         #   Search, Diary, Watchlist, Profile
-    movie/[id].tsx  #   film detail (Log + watchlist toggle)
+    movie/[id].tsx  #   film detail (rate, log, watchlist toggle)
     log/            #   log flow (modal): index = pick film, [filmId] = rate & save
-  components/       # UI, tab bar, rating (scrubber + pill), movie
+    rate/[filmId]   #   rate a film (modal) without logging a watch
+    settings.tsx    #   appearance override + sign out
+  components/       # UI, tab bar, rating (scrubber + pill), movie (rows, poster)
   lib/              # supabase client, tmdb wrappers, query hooks, db types
   providers/        # session provider
   theme/            # color tokens, ThemeProvider, rating ramp
+assets/
+  fonts/            # Vadelma-Medium.otf (wordmark)
 supabase/
   migrations/       # schema + RLS
   functions/tmdb/   # TMDB proxy (Deno)
@@ -125,8 +179,17 @@ supabase/
   never the violet primary.
 - **Append-only logs**: the `logs` table is an event stream — rewatches insert
   new rows and never overwrite a rating, preserving history.
+- **Ratings vs logs**: `ratings` is the mutable counterpart — one row per
+  (user, film) holding your *current* opinion, so you can rate a film you
+  haven't logged. Saving a log writes both: the log keeps its own historical
+  rating for the diary, while `ratings` stays the single source of truth for
+  the "your rating" pill.
 - **Row-level security**: every user-data table is scoped to `auth.uid()`; the
   shared `films` cache is read-only to clients and written only by the edge
   function's service role.
 - **TMDB key** never ships in the app bundle — all TMDB access goes through the
   authenticated edge function.
+- **Fonts**: the root layout blocks render until `Vadelma-Medium` is loaded, so
+  the wordmark never flashes in a fallback face.
+- **Auth routing** is declarative: `Stack.Protected` guards on the session mean
+  signing in or out swaps the stack automatically — no imperative navigation.
