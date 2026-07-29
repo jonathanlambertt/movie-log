@@ -43,33 +43,37 @@ export default function SignInScreen() {
       <RatingGradient />
       <View className="flex-1 justify-center gap-3 px-6">
         <View className="mb-6 items-center gap-2">
-          <Wordmark />
+          <Wordmark size={45} />
           <Text className="px-4 text-center text-xl leading-5 text-text-muted">
             Your personal film diary.
           </Text>
         </View>
-        <FieldInput
-          icon={Mail}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          textContentType="emailAddress"
-          returnKeyType="next"
-        />
-        <FieldInput
-          icon={Lock}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secure
-          autoComplete="current-password"
-          textContentType="password"
-          returnKeyType="go"
-          onSubmitEditing={signIn}
-        />
+        {/* Tighter than the column's gap so the fields read as one stack,
+            separate from the button below. */}
+        <View className="gap-1.5">
+          <FieldInput
+            icon={Mail}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
+            textContentType="emailAddress"
+            returnKeyType="next"
+          />
+          <FieldInput
+            icon={Lock}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secure
+            autoComplete="current-password"
+            textContentType="password"
+            returnKeyType="go"
+            onSubmitEditing={signIn}
+          />
+        </View>
         <Button
           title="Sign in"
           onPress={signIn}

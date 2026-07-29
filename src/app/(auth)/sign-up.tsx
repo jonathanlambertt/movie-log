@@ -71,37 +71,41 @@ export default function SignUpScreen() {
             Get started by creating your profile!
           </Text>
         </View>
-        <FieldInput
-          icon={User}
-          placeholder="Display name"
-          value={displayName}
-          onChangeText={setDisplayName}
-          autoComplete="name"
-          textContentType="name"
-          returnKeyType="next"
-        />
-        <FieldInput
-          icon={Mail}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          textContentType="emailAddress"
-          returnKeyType="next"
-        />
-        <FieldInput
-          icon={Lock}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secure
-          autoComplete="new-password"
-          textContentType="newPassword"
-          returnKeyType="go"
-          onSubmitEditing={signUp}
-        />
+        {/* Tighter than the column's gap so the fields read as one stack,
+            separate from the button below. */}
+        <View className="gap-1.5">
+          <FieldInput
+            icon={User}
+            placeholder="Display name"
+            value={displayName}
+            onChangeText={setDisplayName}
+            autoComplete="name"
+            textContentType="name"
+            returnKeyType="next"
+          />
+          <FieldInput
+            icon={Mail}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
+            textContentType="emailAddress"
+            returnKeyType="next"
+          />
+          <FieldInput
+            icon={Lock}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secure
+            autoComplete="new-password"
+            textContentType="newPassword"
+            returnKeyType="go"
+            onSubmitEditing={signUp}
+          />
+        </View>
         <Button
           title="Create account"
           onPress={signUp}

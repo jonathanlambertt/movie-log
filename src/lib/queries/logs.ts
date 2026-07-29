@@ -55,23 +55,39 @@ export function useDiary() {
   });
 }
 
-// Basic profile stats. Aggregated client-side — fine for one user's logs, and
-// it shares the ['logs'] key so it refreshes whenever a log is created.
+export type ProfileStats = {
+  /** Distinct films, so a rewatch doesn't inflate the count. */
+  films: number;
+  /** Distinct films watched in the current calendar year. */
+  thisYear: number;
+};
+
+// Profile stats, aggregated client-side from the logs the user can see — one
+// round trip, no TMDB calls, and no join since only the log rows matter.
+//
+// Note there's no average here — that comes from useMyRatings(), because
+// ratings holds the user's *current* opinion while logs.rating is the frozen
+// historical value from each watch.
 export function useProfileStats() {
   return useQuery({
     queryKey: ['logs', 'stats'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('logs').select('rating, watched_on');
+    queryFn: async (): Promise<ProfileStats> => {
+      const { data, error } = await supabase.from('logs').select('film_id, watched_on');
       if (error) throw error;
       const logs = data ?? [];
       const year = String(new Date().getFullYear());
-      const thisYear = logs.filter((l) => l.watched_on.startsWith(year)).length;
-      const rated = logs.filter((l): l is { rating: number; watched_on: string } => l.rating != null);
-      const average =
-        rated.length > 0
-          ? rated.reduce((sum, l) => sum + l.rating, 0) / rated.length
-          : null;
-      return { total: logs.length, thisYear, average };
+
+      const films = new Set<number>();
+      const filmsThisYear = new Set<number>();
+
+      for (const log of logs) {
+        films.add(log.film_id);
+        if (log.watched_on.startsWith(year)) {
+          filmsThisYear.add(log.film_id);
+        }
+      }
+
+      return { films: films.size, thisYear: filmsThisYear.size };
     },
   });
 }

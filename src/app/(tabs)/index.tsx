@@ -22,7 +22,7 @@ export default function SearchScreen() {
   return (
     <SafeAreaView edges={["top"]} className="flex-1 bg-background">
       <View className="items-center pb-1 pt-2">
-        <Wordmark />
+        <Wordmark size={32} />
       </View>
       <View className="px-3 pb-3 pt-1">
         <SearchInput value={query} onChangeText={setQuery} />

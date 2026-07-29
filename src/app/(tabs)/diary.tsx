@@ -22,11 +22,10 @@ function monthTitle(iso: string) {
   });
 }
 
+// Just the day number — the month and year are already in the section header,
+// and the row shows it in a leading rail.
 function dayLabel(iso: string) {
-  return parseDate(iso).toLocaleDateString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-  });
+  return parseDate(iso).toLocaleDateString(undefined, { day: 'numeric' });
 }
 
 // Logs arrive sorted newest-first, so a sequential pass yields month sections
@@ -90,7 +89,7 @@ export default function DiaryScreen() {
           contentContainerStyle={{ paddingBottom: 24 }}
           stickySectionHeadersEnabled={false}
           renderSectionHeader={({ section }) => (
-            <Text className="bg-background px-4 pb-1 pt-4 text-sm font-semibold text-text-muted">
+            <Text className="bg-background px-4 pb-2 pt-5 text-lg font-bold text-text-primary">
               {section.title}
             </Text>
           )}
@@ -100,7 +99,7 @@ export default function DiaryScreen() {
               title={item.films?.title ?? 'Unknown film'}
               posterPath={item.films?.poster_path ?? null}
               year={item.films?.release_date?.slice(0, 4) ?? null}
-              dateLabel={dayLabel(item.watched_on)}
+              day={dayLabel(item.watched_on)}
               rating={item.rating}
               badge={
                 item.is_rewatch ? (

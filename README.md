@@ -39,20 +39,27 @@ with movie metadata from TMDB.
 - **Log** a film: watch date, 1–10 rating, rewatch flag, optional review
 - **Diary**: reverse-chron log of watches, grouped by month (append-only —
   a rewatch is a new row, so rating history is preserved)
-- **Watchlist**: one-tap toggle from any film, shown as a poster grid or an
-  info-rich list (the choice persists across launches)
-- **Profile**: stats for films this year, total films logged, and average
+- **Watchlist**: one-tap toggle from any film, shown as a four-column poster grid
+- **Profile**: identity (initials avatar, display name, `@username`, a short
+  bio) above a three-up stat strip — distinct films, films this year, and average
   rating (tinted with the rating ramp)
-- **Settings** (gear on Profile): appearance override — system / light / dark —
-  and sign out
-- Your rating shows as a colored pill on the movie detail screen, diary rows,
-  and watchlist list rows
+- **Edit profile** (modal from the button under your bio): display name,
+  username, and a 240-char bio, all stored on the `profiles` row
+- **Settings** (gear on Profile): account email, appearance override —
+  system / light / dark — and sign out
+- Your rating shows as a colored pill on the movie detail screen and diary rows
 
 ### Not yet wired
 
-- Rating pills on the poster grids (search and watchlist grid view) — the list
-  views have them; the grids show bare posters
+- Rating pills on the poster grids (search and watchlist) — the grids show bare
+  posters
 - Community average is hidden in the UI for now (the data still flows from TMDB)
+- Avatars are initials only — `profiles.avatar_url` has no upload path yet (that
+  needs an image picker plus a Storage bucket, so a new native build)
+- Profiles are readable only by their owner (`profiles: read own`), so usernames
+  aren't public and there's no way to view someone else's profile yet. The
+  profile components all take a profile + stats object as props, so the screen
+  itself is ready for it
 
 ## Getting started
 

@@ -2,8 +2,8 @@ import { Image } from 'expo-image';
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { RatingPill } from '@/components/rating/RatingPill';
 import { posterUrl } from '@/lib/tmdb';
+import { ratingColor } from '@/theme/ratingRamp';
 import { useTheme } from '@/theme/ThemeProvider';
 
 const POSTER_W = 48;
@@ -15,28 +15,32 @@ type Props = {
   posterPath: string | null;
   /** Release year, already sliced from the release date. */
   year: string | null;
-  /** Secondary line: watch date in the diary, date added on the watchlist. */
-  dateLabel: string | null;
-  /** The user's rating, shown as a pill on the right. null = unrated. */
+  /** Day of the month, in a leading rail. The month lives in the section header. */
+  day: string | null;
+  /** The user's rating, in ramp color under the title. null = unrated. */
   rating: number | null;
-  /** Optional marker beside the date, e.g. the diary's rewatch indicator. */
+  /** Optional marker beside the rating, e.g. the diary's rewatch indicator. */
   badge?: ReactNode;
   onPress: () => void;
 };
 
-// Shared list row for films that live in the database: diary entries and the
-// watchlist's list view. Poster, title + year, a date line, and the rating.
+// A diary entry: day number in a leading rail, then poster, then title with the
+// rating beneath it.
+//
+// The rating is a bare ramp-colored number rather than a filled pill — at one
+// per row a wall of saturated chips overwhelmed the list, so the color is kept
+// but dialed down to just the glyph.
 export function FilmRow({
   filmId,
   title,
   posterPath,
   year,
-  dateLabel,
+  day,
   rating,
   badge,
   onPress,
 }: Props) {
-  const { colors } = useTheme();
+  const { colors, resolved } = useTheme();
   const uri = posterUrl(posterPath, 'w185');
 
   return (
@@ -44,6 +48,10 @@ export function FilmRow({
       onPress={onPress}
       className="flex-row items-center gap-3 px-4 py-2 active:bg-surface"
     >
+      {day ? (
+        <Text className="w-7 text-center text-xl font-bold text-text-muted">{day}</Text>
+      ) : null}
+
       {uri ? (
         <Image
           source={{ uri }}
@@ -71,17 +79,20 @@ export function FilmRow({
           {title}
           {year ? <Text className="font-normal text-text-faint">  {year}</Text> : null}
         </Text>
-        {dateLabel || badge ? (
-          <View className="mt-0.5 flex-row items-center gap-2">
-            {dateLabel ? (
-              <Text className="text-sm text-text-muted">{dateLabel}</Text>
+        {rating != null || badge ? (
+          <View className="mt-1 flex-row items-center gap-2">
+            {rating != null ? (
+              <Text
+                style={{ color: ratingColor(rating, resolved) }}
+                className="text-sm font-bold"
+              >
+                {rating}
+              </Text>
             ) : null}
             {badge}
           </View>
         ) : null}
       </View>
-
-      {rating != null && <RatingPill rating={rating} />}
     </Pressable>
   );
 }

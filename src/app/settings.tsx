@@ -4,11 +4,13 @@ import { Alert, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { supabase } from '@/lib/supabase';
+import { useSession } from '@/providers/SessionProvider';
 import { useTheme, type ThemePreference } from '@/theme/ThemeProvider';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { preference, setPreference, colors } = useTheme();
+  const { session } = useSession();
   const options: ThemePreference[] = ['system', 'light', 'dark'];
 
   // Signing out flips the root session guard, which unmounts this screen and
@@ -30,6 +32,14 @@ export default function SettingsScreen() {
       </View>
 
       <View className="gap-5 px-5 pt-2">
+        {/* Account. The email lives here rather than on the profile screen,
+            which a stranger may eventually be able to see. Editing the profile
+            itself happens on the profile screen. */}
+        <View className="gap-2 rounded-2xl border border-border bg-surface p-4">
+          <Text className="font-semibold text-text-primary">Account</Text>
+          <Text className="text-sm text-text-muted">{session?.user.email}</Text>
+        </View>
+
         {/* Appearance */}
         <View className="gap-3 rounded-2xl border border-border bg-surface p-4">
           <Text className="font-semibold text-text-primary">Appearance</Text>
