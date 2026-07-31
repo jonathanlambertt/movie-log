@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { Star } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -17,7 +18,7 @@ type Props = {
   year: string | null;
   /** Day of the month, in a leading rail. The month lives in the section header. */
   day: string | null;
-  /** The user's rating, in ramp color under the title. null = unrated. */
+  /** The user's rating, shown as a scored chip under the title. null = unrated. */
   rating: number | null;
   /** Optional marker beside the rating, e.g. the diary's rewatch indicator. */
   badge?: ReactNode;
@@ -27,9 +28,12 @@ type Props = {
 // A diary entry: day number in a leading rail, then poster, then title with the
 // rating beneath it.
 //
-// The rating is a bare ramp-colored number rather than a filled pill — at one
-// per row a wall of saturated chips overwhelmed the list, so the color is kept
-// but dialed down to just the glyph.
+// The rating chip reads as a score rather than a stray number: a filled star
+// marks it as MY rating, and the "/10" gives the bare digit a scale. Text stays
+// in the primary token so it's legible at any value — the ramp color rides on
+// the star alone. (Earlier passes colored the digit itself, which is hard to
+// read at the low end, and a fully ramp-filled pill made a wall of saturation
+// one row after another.)
 export function FilmRow({
   filmId,
   title,
@@ -80,14 +84,22 @@ export function FilmRow({
           {year ? <Text className="font-normal text-text-faint">  {year}</Text> : null}
         </Text>
         {rating != null || badge ? (
-          <View className="mt-1 flex-row items-center gap-2">
+          <View className="mt-1.5 flex-row items-center gap-2">
             {rating != null ? (
-              <Text
-                style={{ color: ratingColor(rating, resolved) }}
-                className="text-sm font-bold"
-              >
-                {rating}
-              </Text>
+              // surface-alt, not surface: the row's active state is bg-surface,
+              // which would swallow the chip on press.
+              <View className="flex-row items-baseline gap-1 rounded-md bg-surface-alt py-0.5 pl-1.5 pr-2">
+                <Star
+                  size={11}
+                  color={ratingColor(rating, resolved)}
+                  fill={ratingColor(rating, resolved)}
+                  // Baseline alignment works on the text, not the SVG box, so
+                  // nudge the star down onto the digits' baseline.
+                  style={{ alignSelf: 'center', marginTop: 1 }}
+                />
+                <Text className="text-sm font-bold text-text-primary">{rating}</Text>
+                <Text className="text-[11px] font-medium text-text-faint">/10</Text>
+              </View>
             ) : null}
             {badge}
           </View>

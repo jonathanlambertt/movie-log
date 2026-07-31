@@ -1,11 +1,12 @@
-# movielog
+# Cinebook
 
 A mobile-first movie logging app — a personal, single-player film diary
 (think Letterboxd, minus the social layer). Log films you've watched with a
 1–10 rating, keep a watchlist, and see your rating history over time.
 
-The app ships under the wordmark **Cinebook**; `movielog` is the repo, package
-name, and Expo slug.
+The app ships as **Cinebook** — both the home-screen name and the wordmark.
+`movielog` survives as the repo, package name, Expo slug, and bundle identifier;
+those are identifiers tied to EAS and App Store Connect, so they stay put.
 
 Built with Expo + React Native, styled with NativeWind, backed by Supabase,
 with movie metadata from TMDB.
@@ -147,12 +148,17 @@ JS-only changes don't need a rebuild — each build profile subscribes to the
 channel of the same name:
 
 ```bash
-eas update --channel preview --message "what changed" --environment preview
+eas update --channel preview --platform ios --message "what changed" --environment preview
 ```
 
-`--environment` is required as of SDK 55+. `runtimeVersion` follows the
-`appVersion` policy, so bumping `version` in `app.json` requires a new native
-build before updates flow again. Adding a native module always requires one.
+`--environment` is required as of SDK 55+. The project is iOS-only
+(`"platforms": ["ios"]` in `app.json`); re-adding Android means restoring the
+`android` block with its `package` and putting `"android"` back in `platforms`.
+
+`runtimeVersion` follows the `appVersion` policy, so bumping `version` in
+`app.json` requires a new native build before updates flow again. Adding a
+native module always requires one — as does changing anything baked into the
+binary at build time, including the app `name`, icon, and splash screen.
 
 ## Project structure
 

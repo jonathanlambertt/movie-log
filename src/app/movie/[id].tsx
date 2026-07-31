@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Bookmark, ChevronLeft, ChevronRight, Plus } from 'lucide-react-native';
+import { Bookmark, ChevronLeft, ChevronRight, Plus, Star } from 'lucide-react-native';
 import {
   ActivityIndicator,
   Pressable,
@@ -145,17 +145,26 @@ export default function MovieDetail() {
             accessibilityLabel={
               myRating.data != null ? 'Change your rating' : 'Rate this film'
             }
-            className="flex-row items-center gap-2 active:opacity-60"
+            className="flex-row items-center justify-between gap-2 rounded-xl border border-border bg-surface px-4 py-3 active:opacity-70"
           >
-            {myRating.data != null ? (
-              <>
-                <Text className="text-sm text-text-muted">Your rating</Text>
-                <RatingPill rating={myRating.data} />
-              </>
-            ) : (
-              <Text className="text-sm text-text-muted">Rate this film</Text>
-            )}
-            <ChevronRight size={16} color={colors['--color-text-faint']} />
+            <View className="flex-row items-center gap-2">
+              {myRating.data != null ? (
+                <>
+                  <Text className="text-[15px] font-bold text-text-primary">
+                    Your rating
+                  </Text>
+                  <RatingPill rating={myRating.data} />
+                </>
+              ) : (
+                <>
+                  <Star size={18} color={colors['--color-primary']} strokeWidth={2.4} />
+                  <Text className="text-[15px] font-bold text-primary">
+                    Rate this film
+                  </Text>
+                </>
+              )}
+            </View>
+            <ChevronRight size={18} color={colors['--color-text-faint']} />
           </Pressable>
 
           {/* Overview */}

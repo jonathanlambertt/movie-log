@@ -1,7 +1,7 @@
-import * as Haptics from 'expo-haptics';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { LayoutChangeEvent, Pressable, Text, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import * as Haptics from "expo-haptics";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { LayoutChangeEvent, Pressable, Text, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -10,10 +10,10 @@ import Animated, {
   withSequence,
   withSpring,
   withTiming,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
-import { ratingColor, RATING_WORDS } from '@/theme/ratingRamp';
-import { useTheme } from '@/theme/ThemeProvider';
+import { RATING_WORDS, ratingColor } from "@/theme/ratingRamp";
+import { useTheme } from "@/theme/ThemeProvider";
 
 const COUNT = 10;
 const TRACK_PADDING = 16; // matches the track's px-4, so ticks map to touch x
@@ -56,8 +56,10 @@ export function RatingScrubber({
   }, [value]);
 
   const color =
-    rating != null ? ratingColor(rating, resolved) : colors['--color-text-faint'];
-  const inactiveTick = colors['--color-surface-alt'];
+    rating != null
+      ? ratingColor(rating, resolved)
+      : colors["--color-text-faint"];
+  const inactiveTick = colors["--color-surface-alt"];
 
   const setSnapped = useCallback(
     (next: number) => {
@@ -77,7 +79,7 @@ export function RatingScrubber({
   );
 
   const valueFromX = (x: number) => {
-    'worklet';
+    "worklet";
     const usable = trackWidth.value - TRACK_PADDING * 2;
     if (usable <= 0) return;
     const t = Math.min(1, Math.max(0, (x - TRACK_PADDING) / usable));
@@ -108,10 +110,10 @@ export function RatingScrubber({
       accessibilityRole="adjustable"
       accessibilityLabel="Rating out of 10"
       accessibilityValue={{ min: 1, max: 10, now: rating ?? undefined }}
-      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+      accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
       onAccessibilityAction={(e) => {
-        if (e.nativeEvent.actionName === 'increment') adjust(1);
-        if (e.nativeEvent.actionName === 'decrement') adjust(-1);
+        if (e.nativeEvent.actionName === "increment") adjust(1);
+        if (e.nativeEvent.actionName === "decrement") adjust(-1);
       }}
     >
       {/* Big number + one-word descriptor */}
@@ -120,10 +122,10 @@ export function RatingScrubber({
           style={[numberStyle, { color }]}
           className="text-[76px] font-extrabold leading-none tabular-nums"
         >
-          {rating ?? '—'}
+          {rating ?? "—"}
         </Animated.Text>
-        <Text style={{ color }} className="mt-2 text-xl font-semibold">
-          {rating ? RATING_WORDS[rating] : 'drag the ruler'}
+        <Text style={{ color }} className="text-xl font-semibold">
+          {rating ? RATING_WORDS[rating] : "drag the ruler"}
         </Text>
       </View>
 
@@ -152,8 +154,8 @@ export function RatingScrubber({
                     style={current ? { color } : undefined}
                     className={
                       current
-                        ? 'text-[10.5px] font-bold'
-                        : 'text-[10.5px] text-text-faint'
+                        ? "text-[10.5px] font-bold"
+                        : "text-[10.5px] text-text-faint"
                     }
                   >
                     {n}
@@ -176,11 +178,11 @@ export function RatingScrubber({
           <Text
             className={
               rating != null
-                ? 'text-[15px] font-bold text-white'
-                : 'text-[15px] font-bold text-text-faint'
+                ? "text-[15px] font-bold text-white"
+                : "text-[15px] font-bold text-text-faint"
             }
           >
-            {rating != null ? `Log film · ${rating}` : 'Rate to log'}
+            {rating != null ? `Log film · ${rating}` : "Rate to log"}
           </Text>
         </Pressable>
       )}

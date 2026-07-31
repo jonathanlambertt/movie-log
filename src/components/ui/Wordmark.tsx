@@ -7,7 +7,15 @@ const TITLE_FONT = 'Vadelma-Medium';
 export function Wordmark({ size = 35 }: { size?: number }) {
   return (
     <Text
-      style={{ fontFamily: TITLE_FONT, fontSize: size, letterSpacing: 0.5 }}
+      style={{
+        fontFamily: TITLE_FONT,
+        fontSize: size,
+        letterSpacing: 0.5,
+        // Vadelma's glyphs paint wider than their advance widths, so the final
+        // letter clips against the text box. Padding both sides keeps the
+        // wordmark optically centered inside centering parents.
+        paddingHorizontal: Math.ceil(size * 0.1),
+      }}
       className="text-text-primary"
     >
       Cinebook
