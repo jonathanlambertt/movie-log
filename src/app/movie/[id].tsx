@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Bookmark, ChevronLeft, ChevronRight, Plus, Star } from 'lucide-react-native';
+import { Bookmark, ChevronLeft, ChevronRight, Heart, Plus } from 'lucide-react-native';
 import {
   ActivityIndicator,
   Pressable,
@@ -145,20 +145,20 @@ export default function MovieDetail() {
             accessibilityLabel={
               myRating.data != null ? 'Change your rating' : 'Rate this film'
             }
-            className="flex-row items-center justify-between gap-2 rounded-xl border border-border bg-surface px-4 py-3 active:opacity-70"
+            className="flex-row items-center justify-between gap-2 rounded-xl border border-border bg-surface px-5 py-4 active:opacity-70"
           >
             <View className="flex-row items-center gap-2">
               {myRating.data != null ? (
                 <>
-                  <Text className="text-[15px] font-bold text-text-primary">
+                  <Text className="text-[17px] font-bold text-text-primary">
                     Your rating
                   </Text>
                   <RatingPill rating={myRating.data} />
                 </>
               ) : (
                 <>
-                  <Star size={18} color={colors['--color-primary']} strokeWidth={2.4} />
-                  <Text className="text-[15px] font-bold text-primary">
+                  <Heart size={20} color={colors['--color-text-primary']} strokeWidth={2.4} />
+                  <Text className="text-[17px] font-bold text-text-primary">
                     Rate this film
                   </Text>
                 </>
@@ -186,18 +186,18 @@ export default function MovieDetail() {
 
             <Pressable
               onPress={onToggleWatchlist}
-              disabled={toggleWatchlist.isPending || watchlisted.isLoading}
-              style={isSaved ? { backgroundColor: colors['--color-primary'] } : undefined}
-              className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-primary py-3.5 active:opacity-90"
+              disabled={watchlisted.isLoading}
+              style={isSaved ? { backgroundColor: colors['--color-text-primary'] } : undefined}
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-text-primary py-3.5 active:opacity-90"
             >
               <Bookmark
                 size={18}
-                color={isSaved ? colors['--color-on-primary'] : colors['--color-primary']}
-                fill={isSaved ? colors['--color-on-primary'] : 'transparent'}
+                color={isSaved ? colors['--color-background'] : colors['--color-text-primary']}
+                fill={isSaved ? colors['--color-background'] : 'transparent'}
               />
               <Text
                 style={{
-                  color: isSaved ? colors['--color-on-primary'] : colors['--color-primary'],
+                  color: isSaved ? colors['--color-background'] : colors['--color-text-primary'],
                 }}
                 className="text-[15px] font-bold"
               >

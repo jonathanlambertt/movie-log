@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { MovieRow } from "@/components/movie/MovieRow";
 import { PosterCard } from "@/components/movie/PosterCard";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Wordmark } from "@/components/ui/Wordmark";
@@ -40,10 +41,17 @@ export default function SearchScreen() {
         </View>
       ) : (
         <FlatList
+          // numColumns can't change on a live FlatList, so remount when the
+          // layout switches between the search list and the trending grid.
+          key={searching ? "list" : "grid"}
           data={active.data?.results}
           keyExtractor={(movie) => String(movie.id)}
-          numColumns={3}
-          contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 24 }}
+          numColumns={searching ? 1 : 3}
+          contentContainerStyle={
+            searching
+              ? { paddingBottom: 24 }
+              : { paddingHorizontal: 8, paddingBottom: 24 }
+          }
           ListHeaderComponent={
             searching ? null : (
               <Text className="px-1 pb-2 text-base font-semibold text-text-muted">
@@ -56,17 +64,29 @@ export default function SearchScreen() {
               No films found
             </Text>
           }
-          renderItem={({ item }) => (
-            <PosterCard
-              movie={item}
-              onPress={() =>
-                router.push({
-                  pathname: "/movie/[id]",
-                  params: { id: String(item.id) },
-                })
-              }
-            />
-          )}
+          renderItem={({ item }) =>
+            searching ? (
+              <MovieRow
+                movie={item}
+                onPress={() =>
+                  router.push({
+                    pathname: "/movie/[id]",
+                    params: { id: String(item.id) },
+                  })
+                }
+              />
+            ) : (
+              <PosterCard
+                movie={item}
+                onPress={() =>
+                  router.push({
+                    pathname: "/movie/[id]",
+                    params: { id: String(item.id) },
+                  })
+                }
+              />
+            )
+          }
         />
       )}
     </SafeAreaView>

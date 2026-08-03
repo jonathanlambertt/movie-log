@@ -49,8 +49,8 @@ export function FieldInput({
         onChangeText={onChangeText}
         placeholderTextColor={colors['--color-text-faint']}
         autoCorrect={false}
-        selectionColor={colors['--color-primary']}
-        cursorColor={colors['--color-primary']}
+        selectionColor={colors['--color-text-primary']}
+        cursorColor={colors['--color-text-primary']}
         secureTextEntry={secure && !revealed}
         style={{ fontSize: 18, paddingVertical: 0 }}
         className="flex-1 text-text-primary"

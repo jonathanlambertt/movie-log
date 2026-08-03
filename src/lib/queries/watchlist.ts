@@ -53,9 +53,14 @@ type ToggleInput = {
   isWatchlisted: boolean;
 };
 
+type ToggleContext = {
+  queryKey: readonly ['watchlist', 'has', number];
+  previous: boolean | undefined;
+};
+
 export function useToggleWatchlist() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<void, Error, ToggleInput, ToggleContext>({
     mutationFn: async ({ userId, filmId, isWatchlisted }: ToggleInput) => {
       if (isWatchlisted) {
         const { error } = await supabase
@@ -65,6 +70,7 @@ export function useToggleWatchlist() {
         if (error) throw error;
       } else {
         // Cache the film first so the watchlist → films FK is satisfied.
+        // No longer blocks the visible UI — onMutate below already flipped it.
         await tmdbApi.movie(filmId, { cache: true });
         const { error } = await supabase
           .from('watchlist')
@@ -72,7 +78,19 @@ export function useToggleWatchlist() {
         if (error) throw error;
       }
     },
-    onSuccess: () => {
+    onMutate: async ({ filmId, isWatchlisted }) => {
+      const queryKey = ['watchlist', 'has', filmId] as const;
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<boolean>(queryKey);
+      queryClient.setQueryData<boolean>(queryKey, !isWatchlisted);
+      return { queryKey, previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context) {
+        queryClient.setQueryData(context.queryKey, context.previous);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['watchlist'] });
     },
   });

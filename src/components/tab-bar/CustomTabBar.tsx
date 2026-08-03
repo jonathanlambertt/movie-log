@@ -90,7 +90,7 @@ export function CustomTabBar({
                 size={24}
                 color={
                   isFocused
-                    ? colors["--color-primary"]
+                    ? colors["--color-text-primary"]
                     : colors["--color-text-faint"]
                 }
                 strokeWidth={isFocused ? 2.4 : 1.8}
@@ -98,7 +98,7 @@ export function CustomTabBar({
               <Text
                 className={
                   isFocused
-                    ? "text-[10px] font-semibold text-primary"
+                    ? "text-[10px] font-semibold text-text-primary"
                     : "text-[10px] text-text-faint"
                 }
               >
