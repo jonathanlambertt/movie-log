@@ -78,3 +78,24 @@ export function useTheme() {
   }
   return context;
 }
+
+// Pins a subtree to one theme regardless of system/user preference. Overrides
+// both the CSS variables (for className-based colors) and the useTheme()
+// colors object (for the icon/cursor/placeholder colors FieldInput and
+// Button read directly) so nothing in the subtree leaks the resolved theme.
+export function ThemeOverride({
+  theme,
+  children,
+}: PropsWithChildren<{ theme: ThemeName }>) {
+  const { setPreference } = useTheme();
+  return (
+    <ThemeContext.Provider
+      value={{ preference: theme, resolved: theme, colors: themes[theme], setPreference }}
+    >
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+      <View style={vars(themes[theme])} className="flex-1 bg-background">
+        {children}
+      </View>
+    </ThemeContext.Provider>
+  );
+}
