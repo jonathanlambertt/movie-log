@@ -115,7 +115,8 @@ export default function SignUpScreen() {
         <Link href="/sign-in" asChild>
           <Pressable className="items-center py-2 active:opacity-70">
             <Text className="text-sm text-text-muted">
-              Already have an account? Sign in
+              Already have an account?{" "}
+              <Text className="text-white text-bold">Sign in</Text>
             </Text>
           </Pressable>
         </Link>
