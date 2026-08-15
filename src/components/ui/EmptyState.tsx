@@ -10,8 +10,10 @@ type Props = {
   icon: LucideIcon;
   title: string;
   message: string;
-  actionTitle: string;
-  onAction: () => void;
+  /** Both are needed to show the button. Omit when there's nowhere useful to
+      send the user — an empty state can just explain itself. */
+  actionTitle?: string;
+  onAction?: () => void;
 };
 
 // Full-screen empty state for a list tab. The icon should be the same glyph the
@@ -44,9 +46,11 @@ export function EmptyState({
           </Text>
         </View>
 
-        <View className="w-60 pt-1">
-          <Button title={actionTitle} onPress={onAction} />
-        </View>
+        {actionTitle && onAction ? (
+          <View className="w-60 pt-1">
+            <Button title={actionTitle} onPress={onAction} />
+          </View>
+        ) : null}
       </View>
     </Animated.View>
   );

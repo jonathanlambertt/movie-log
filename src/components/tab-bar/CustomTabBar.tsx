@@ -2,7 +2,7 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import type { BottomTabBarProps } from "expo-router/js-tabs";
 import {
-  Bookmark,
+  Bell,
   BookOpen,
   Plus,
   Search,
@@ -19,14 +19,14 @@ import { useTheme } from "@/theme/ThemeProvider";
 const ICONS: Record<string, LucideIcon> = {
   index: Search,
   diary: BookOpen,
-  watchlist: Bookmark,
+  activity: Bell,
   profile: User,
 };
 
 // The raised "+" needs to overflow above the bar, which the default
 // tabBarButton can't do — hence this fully custom bar. The button sits
 // absolutely positioned inside a fixed-width center slot between the
-// Diary and Watchlist tabs.
+// Diary and Activity tabs.
 export function CustomTabBar({
   state,
   descriptors,

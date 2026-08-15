@@ -32,6 +32,7 @@ function RootNavigator() {
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="movie/[id]" />
+        <Stack.Screen name="profile/watchlist" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="edit-profile" options={{ presentation: 'modal' }} />
         <Stack.Screen name="log" options={{ presentation: 'modal' }} />
