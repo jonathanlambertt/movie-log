@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { ratingColor } from '@/theme/ratingRamp';
 import { useTheme } from '@/theme/ThemeProvider';
 

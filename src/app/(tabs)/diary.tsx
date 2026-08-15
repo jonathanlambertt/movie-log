@@ -1,11 +1,12 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { BookOpen, Repeat } from 'lucide-react-native';
 import { useCallback } from 'react';
-import { ActivityIndicator, SectionList, Text, View } from 'react-native';
+import { ActivityIndicator, SectionList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { FilmRow } from '@/components/movie/FilmRow';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Text } from '@/components/ui/Text';
 import { useDiary, type DiaryLog } from '@/lib/queries/logs';
 import { useTheme } from '@/theme/ThemeProvider';
 

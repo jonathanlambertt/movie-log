@@ -11,13 +11,13 @@ import {
   Pressable,
   ScrollView,
   Switch,
-  Text,
-  TextInput,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RatingScrubber } from '@/components/rating/RatingScrubber';
+import { Text } from '@/components/ui/Text';
+import { TextInput } from '@/components/ui/TextInput';
 import { useCreateLog, useHasLoggedFilm } from '@/lib/queries/logs';
 import { posterUrl } from '@/lib/tmdb';
 import { useSession } from '@/providers/SessionProvider';

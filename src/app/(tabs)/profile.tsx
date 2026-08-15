@@ -1,11 +1,12 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Settings } from 'lucide-react-native';
 import { useCallback } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { StatStrip } from '@/components/profile/StatStrip';
+import { Text } from '@/components/ui/Text';
 import { useProfileStats } from '@/lib/queries/logs';
 import { useMyProfile } from '@/lib/queries/profile';
 import { useMyRatings } from '@/lib/queries/ratings';

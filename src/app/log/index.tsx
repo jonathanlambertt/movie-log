@@ -1,17 +1,12 @@
 import { useRouter } from "expo-router";
 import { X } from "lucide-react-native";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MovieRow } from "@/components/movie/MovieRow";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { Text } from "@/components/ui/Text";
 import { useMovieSearch, useTrending } from "@/lib/queries/movies";
 import type { TmdbMovie } from "@/lib/tmdb";
 import { useTheme } from "@/theme/ThemeProvider";

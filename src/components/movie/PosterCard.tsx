@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { posterUrl, type TmdbMovie } from '@/lib/tmdb';
 
 export function PosterCard({

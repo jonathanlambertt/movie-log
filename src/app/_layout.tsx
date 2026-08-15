@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { SessionProvider, useSession } from '@/providers/SessionProvider';
+import { bodyFonts } from '@/theme/fonts';
 import { ThemeProvider } from '@/theme/ThemeProvider';
 
 import '../global.css';
@@ -45,6 +46,7 @@ function RootNavigator() {
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
+    ...bodyFonts,
     'Vadelma-Medium': require('../../assets/fonts/Vadelma-Medium.otf'),
   });
 

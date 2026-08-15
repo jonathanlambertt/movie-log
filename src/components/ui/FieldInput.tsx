@@ -1,8 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import { Eye, EyeOff, X, type LucideIcon } from 'lucide-react-native';
 import { useRef, useState } from 'react';
-import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
+import { Pressable, View, type TextInputProps } from 'react-native';
 
+import { TextInput, type TextInputHandle } from '@/components/ui/TextInput';
 import { useTheme } from '@/theme/ThemeProvider';
 
 type Props = Omit<TextInputProps, 'secureTextEntry'> & {
@@ -27,7 +28,7 @@ export function FieldInput({
   ...inputProps
 }: Props) {
   const { colors } = useTheme();
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputHandle>(null);
   const [revealed, setRevealed] = useState(false);
 
   // Clearing keeps focus so the keyboard stays up and the user can retype

@@ -6,13 +6,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  Text,
   View,
 } from "react-native";
 
 import { Button } from "@/components/ui/Button";
 import { FieldInput } from "@/components/ui/FieldInput";
 import { RatingGradient } from "@/components/ui/RatingGradient";
+import { Text } from "@/components/ui/Text";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { supabase } from "@/lib/supabase";
 

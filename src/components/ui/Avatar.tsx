@@ -1,4 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+
+import { Text } from '@/components/ui/Text';
 
 type Props = {
   /** Display name, when the user has set one. */

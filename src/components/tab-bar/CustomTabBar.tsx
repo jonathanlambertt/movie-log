@@ -10,9 +10,10 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 import { Fragment } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Text } from "@/components/ui/Text";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const ICONS: Record<string, LucideIcon> = {

@@ -2,10 +2,11 @@ import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Bookmark } from 'lucide-react-native';
 import { useCallback } from 'react';
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Text } from '@/components/ui/Text';
 import { useWatchlist } from '@/lib/queries/watchlist';
 import { posterUrl } from '@/lib/tmdb';
 import { useTheme } from '@/theme/ThemeProvider';

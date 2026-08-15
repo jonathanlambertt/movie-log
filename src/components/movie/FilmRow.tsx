@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
 import { Star } from 'lucide-react-native';
 import type { ReactNode } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { posterUrl } from '@/lib/tmdb';
 import { ratingColor } from '@/theme/ratingRamp';
 import { useTheme } from '@/theme/ThemeProvider';

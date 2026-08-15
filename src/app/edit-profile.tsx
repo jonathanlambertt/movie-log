@@ -7,14 +7,14 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  Text,
-  TextInput,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
 import { FieldInput } from '@/components/ui/FieldInput';
+import { Text } from '@/components/ui/Text';
+import { TextInput } from '@/components/ui/TextInput';
 import { useMyProfile, useUpdateProfile } from '@/lib/queries/profile';
 import { useSession } from '@/providers/SessionProvider';
 import { useTheme } from '@/theme/ThemeProvider';

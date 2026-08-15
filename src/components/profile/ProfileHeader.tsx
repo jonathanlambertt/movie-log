@@ -1,6 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Avatar } from '@/components/ui/Avatar';
+import { Text } from '@/components/ui/Text';
 import type { Profile } from '@/lib/queries/profile';
 
 type Props = {

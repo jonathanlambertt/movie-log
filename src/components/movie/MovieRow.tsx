@@ -1,7 +1,8 @@
 import { Image } from 'expo-image';
 import { ChevronRight } from 'lucide-react-native';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { posterUrl, type TmdbMovie } from '@/lib/tmdb';
 import { useTheme } from '@/theme/ThemeProvider';
 

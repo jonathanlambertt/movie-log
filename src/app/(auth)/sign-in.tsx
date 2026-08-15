@@ -6,13 +6,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  Text,
   View,
 } from "react-native";
 
 import { Button } from "@/components/ui/Button";
 import { FieldInput } from "@/components/ui/FieldInput";
 import { RatingGradient } from "@/components/ui/RatingGradient";
+import { Text } from "@/components/ui/Text";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { supabase } from "@/lib/supabase";
 
@@ -82,7 +82,9 @@ export default function SignInScreen() {
         />
         <Link href="/sign-up" asChild>
           <Pressable className="items-center py-2 active:opacity-70">
-            <Text className="text-sm text-text-muted">No account? Sign up</Text>
+            <Text className="text-sm text-text-muted">
+              No account? <Text className="text-white text-bold">Sign up</Text>
+            </Text>
           </Pressable>
         </Link>
       </View>

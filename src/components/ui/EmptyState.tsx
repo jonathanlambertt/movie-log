@@ -1,8 +1,9 @@
 import type { LucideIcon } from 'lucide-react-native';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Button } from '@/components/ui/Button';
+import { Text } from '@/components/ui/Text';
 import { useTheme } from '@/theme/ThemeProvider';
 
 type Props = {

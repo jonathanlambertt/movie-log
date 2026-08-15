@@ -1,16 +1,11 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Bookmark, ChevronLeft, ChevronRight, Heart, Plus } from 'lucide-react-native';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RatingPill } from '@/components/rating/RatingPill';
+import { Text } from '@/components/ui/Text';
 import { useMovie } from '@/lib/queries/movies';
 import { useMyRating } from '@/lib/queries/ratings';
 import { useIsWatchlisted, useToggleWatchlist } from '@/lib/queries/watchlist';

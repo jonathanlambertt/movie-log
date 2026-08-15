@@ -2,10 +2,11 @@ import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RatingScrubber } from '@/components/rating/RatingScrubber';
+import { Text } from '@/components/ui/Text';
 import { useMyRating, useRemoveRating, useSetRating } from '@/lib/queries/ratings';
 import { posterUrl } from '@/lib/tmdb';
 import { useSession } from '@/providers/SessionProvider';

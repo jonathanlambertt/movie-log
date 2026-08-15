@@ -1,11 +1,12 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MovieRow } from "@/components/movie/MovieRow";
 import { PosterCard } from "@/components/movie/PosterCard";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { Text } from "@/components/ui/Text";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { useMovieSearch, useTrending } from "@/lib/queries/movies";
 import { useTheme } from "@/theme/ThemeProvider";
